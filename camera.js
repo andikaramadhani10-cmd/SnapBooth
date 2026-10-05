@@ -284,6 +284,59 @@
         if (ready) renderCanvas();
     }
 
+    // Filter manual (kompatibel dengan Safari iOS, tidak memakai ctx.filter)
+function applyFilter(src, name) {
+    if (name === "normal") return src;
+
+    const c = document.createElement("canvas");
+    c.width = src.width;
+    c.height = src.height;
+    const ctx = c.getContext("2d");
+    ctx.drawImage(src, 0, 0);
+
+    const img = ctx.getImageData(0, 0, c.width, c.height);
+    const d = img.data;
+    const clamp = (v) => (v < 0 ? 0 : v > 255 ? 255 : v);
+
+    for (let i = 0; i < d.length; i += 4) {
+        let r = d[i], g = d[i + 1], b = d[i + 2];
+
+        if (name === "grayscale") {
+            r = g = b = 0.299 * r + 0.587 * g + 0.114 * b;
+        } else if (name === "vintage") {
+            const tr = 0.393 * r + 0.769 * g + 0.189 * b;
+            const tg = 0.349 * r + 0.686 * g + 0.168 * b;
+            const tb = 0.272 * r + 0.534 * g + 0.131 * b;
+            r = r * 0.5 + tr * 0.5;
+            g = g * 0.5 + tg * 0.5;
+            b = b * 0.5 + tb * 0.5;
+            const l = 0.299 * r + 0.587 * g + 0.114 * b;
+            r = (l + (r - l) * 0.8 - 128) * 1.1 + 128;
+            g = (l + (g - l) * 0.8 - 128) * 1.1 + 128;
+            b = (l + (b - l) * 0.8 - 128) * 1.1 + 128;
+        } else if (name === "warm") {
+            r = r * 1.1 + 8;
+            g = g * 1.02;
+            b = b * 0.88;
+        } else if (name === "cool") {
+            r = r * 0.93;
+            g = g * 1.02;
+            b = b * 1.1 + 6;
+        } else if (name === "bright") {
+            r = (r * 1.2 - 128) * 1.05 + 128;
+            g = (g * 1.2 - 128) * 1.05 + 128;
+            b = (b * 1.2 - 128) * 1.05 + 128;
+        }
+
+        d[i] = clamp(r);
+        d[i + 1] = clamp(g);
+        d[i + 2] = clamp(b);
+    }
+
+    ctx.putImageData(img, 0, 0);
+    return c;
+}
+
     function layoutFor(template, pw, ph) {
         // pw/ph = ukuran satu foto di hasil akhir
         const n = state.count;
@@ -333,10 +386,7 @@
                 ctx.lineWidth = 2;
                 ctx.strokeRect(x, y, L.cellW, L.cellH);
             }
-            ctx.save();
-            ctx.filter = FILTERS[state.filter] || "none"; // tidak didukung Safari iOS lama
-            ctx.drawImage(photo, x + L.mat, y + L.mat, pw, ph);
-            ctx.restore();
+            ctx.drawImage(applyFilter(photo, state.filter), x + L.mat, y + L.mat, pw, ph);
         });
 
         // teks
