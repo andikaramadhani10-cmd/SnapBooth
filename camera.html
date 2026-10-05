@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapBooth Camera</title>
+    <script>try{var t=localStorage.getItem("snapbooth-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="page-camera">
+
+<header class="topbar">
+    <a href="index.html" class="back-button">BACK</a>
+    <div class="top-logo">SNAP<span>BOOTH</span></div>
+    <div class="topbar-space"></div>
+</header>
+
+<main class="camera-page">
+
+    <!-- STEP 01 -->
+    <section class="control-section">
+        <div class="section-title">
+            <span class="section-number">01</span>
+            <div>
+                <h1>Setup Your Booth</h1>
+                <p>Choose your camera and photo orientation</p>
+            </div>
+        </div>
+
+        <div class="control-grid">
+            <div class="control-group">
+                <label>PHOTO ORIENTATION</label>
+                <div class="orientation-buttons">
+                    <button type="button" id="portraitButton" class="orientation-button active">
+                        <span class="orientation-symbol portrait-symbol"></span>Portrait
+                    </button>
+                    <button type="button" id="landscapeButton" class="orientation-button">
+                        <span class="orientation-symbol landscape-symbol"></span>Landscape
+                    </button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label for="cameraSelect">CAMERA DEVICE</label>
+                <select id="cameraSelect">
+                    <option value="">Activate camera first</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>PHOTOS PER SESSION</label>
+                <div class="setting-buttons customize-buttons" data-setting="count">
+                    <button type="button" class="customize-button" data-value="2">2 photos</button>
+                    <button type="button" class="customize-button active" data-value="4">4 photos</button>
+                    <button type="button" class="customize-button" data-value="6">6 photos</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>COUNTDOWN TIMER</label>
+                <div class="setting-buttons customize-buttons" data-setting="countdown">
+                    <button type="button" class="customize-button active" data-value="3">3 sec</button>
+                    <button type="button" class="customize-button" data-value="5">5 sec</button>
+                    <button type="button" class="customize-button" data-value="10">10 sec</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>THEME COLOR</label>
+                <div class="setting-buttons customize-buttons" data-setting="theme">
+                    <button type="button" class="customize-button active" data-value="pink">Pink</button>
+                    <button type="button" class="customize-button" data-value="blue">Blue</button>
+                    <button type="button" class="customize-button" data-value="green">Green</button>
+                    <button type="button" class="customize-button" data-value="violet">Violet</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CAMERA -->
+    <section class="camera-section">
+        <div class="camera-heading">
+            <div>
+                <div class="live-indicator"><span class="live-dot"></span> LIVE</div>
+                <h2>Camera Preview</h2>
+            </div>
+        </div>
+
+        <div id="cameraContainer" class="camera-container portrait">
+            <video id="camera" autoplay playsinline muted></video>
+
+            <div id="cameraOverlay" class="camera-overlay">
+                <div class="camera-message">
+                    <div class="camera-icon">CAMERA</div>
+                    <h3>Camera Ready</h3>
+                    <p>Activate your camera to start your photobooth.</p>
+                </div>
+            </div>
+
+            <div id="countdown" class="countdown"></div>
+        </div>
+
+        <div class="camera-actions">
+            <button type="button" id="startCamera" class="main-button primary-button">ACTIVATE CAMERA</button>
+            <button type="button" id="mirrorButton" class="main-button secondary-button">MIRROR CAMERA</button>
+            <button type="button" id="sessionButton" class="main-button session-button" disabled>START PHOTO SESSION</button>
+        </div>
+
+        <p id="sessionStatus" class="session-status">Camera belum aktif.</p>
+    </section>
+
+    <!-- RESULT -->
+    <section id="resultSection" class="result-section is-hidden">
+        <div class="section-title">
+            <span class="section-number">02</span>
+            <div>
+                <h2>Your Photos</h2>
+                <p>Review your photos and retake any photo you want.</p>
+            </div>
+        </div>
+        <div id="photoGrid" class="photo-grid"></div>
+    </section>
+
+    <!-- CUSTOMIZE -->
+    <section id="editorSection" class="editor-section is-hidden">
+        <div class="section-title">
+            <span class="section-number">03</span>
+            <div>
+                <h2>Customize Your Photos</h2>
+                <p>Customize the final photobooth result.</p>
+            </div>
+        </div>
+
+        <div class="customize-group">
+            <div class="customize-label">FILTER</div>
+            <div class="customize-buttons" data-group="filter">
+                <button type="button" class="customize-button filter-button active" data-filter="normal">Normal</button>
+                <button type="button" class="customize-button filter-button" data-filter="grayscale">B&amp;W</button>
+                <button type="button" class="customize-button filter-button" data-filter="vintage">Vintage</button>
+                <button type="button" class="customize-button filter-button" data-filter="warm">Warm</button>
+                <button type="button" class="customize-button filter-button" data-filter="cool">Cool</button>
+                <button type="button" class="customize-button filter-button" data-filter="bright">Bright</button>
+            </div>
+        </div>
+
+        <div class="customize-group">
+            <div class="customize-label">TEMPLATE</div>
+            <div class="customize-buttons" data-group="template">
+                <button type="button" class="customize-button template-button active" data-template="classic">Classic</button>
+                <button type="button" class="customize-button template-button" data-template="polaroid">Polaroid</button>
+                <button type="button" class="customize-button template-button" data-template="strip">Photo Strip</button>
+            </div>
+        </div>
+
+        <div class="customize-group">
+            <div class="customize-label">BACKGROUND</div>
+            <div class="customize-buttons" data-group="background">
+                <button type="button" class="customize-button background-button active" data-background="white">White</button>
+                <button type="button" class="customize-button background-button" data-background="black">Black</button>
+                <button type="button" class="customize-button background-button" data-background="pink">Pink</button>
+                <button type="button" class="customize-button background-button" data-background="soft">Soft Gray</button>
+            </div>
+        </div>
+
+        <div class="customize-group">
+            <div class="customize-label">FRAME</div>
+            <div class="customize-buttons" data-group="frame">
+                <button type="button" class="customize-button frame-button active" data-frame="none">None</button>
+                <button type="button" class="customize-button frame-button" data-frame="thin">Thin</button>
+                <button type="button" class="customize-button frame-button" data-frame="bold">Bold</button>
+                <button type="button" class="customize-button frame-button" data-frame="pink">Pink</button>
+                <button type="button" class="customize-button frame-button" data-frame="gold">Gold</button>
+                <button type="button" class="customize-button frame-button" data-frame="double">Double</button>
+                <button type="button" class="customize-button frame-button" data-frame="dashed">Dashed</button>
+            </div>
+        </div>
+
+        <div class="customize-group">
+            <div class="customize-label">STICKER</div>
+            <div class="customize-buttons" data-group="sticker">
+                <button type="button" class="customize-button sticker-button active" data-sticker="none">None</button>
+                <button type="button" class="customize-button sticker-button" data-sticker="star">Star</button>
+                <button type="button" class="customize-button sticker-button" data-sticker="heart">Heart</button>
+                <button type="button" class="customize-button sticker-button" data-sticker="spark">Spark</button>
+                <button type="button" class="customize-button sticker-button" data-sticker="flower">Flower</button>
+                <button type="button" class="customize-button sticker-button" data-sticker="moon">Moon</button>
+                <button type="button" class="customize-button sticker-button" data-sticker="music">Music</button>
+            </div>
+        </div>
+
+        <div class="customize-group">
+            <div class="customize-label">TEXT</div>
+            <div class="text-editor">
+                <input type="text" id="customText" maxlength="40" placeholder="Write something...">
+                <button type="button" id="applyTextButton">APPLY TEXT</button>
+            </div>
+        </div>
+
+        <div class="customize-preview">
+            <div class="preview-title">PREVIEW</div>
+            <div class="preview-area">
+                <canvas id="templateCanvas" width="10" height="10"></canvas>
+            </div>
+            <button type="button" id="downloadButton" class="customize-download">DOWNLOAD JPG</button>
+        </div>
+    </section>
+
+</main>
+
+<script src="camera.js" defer></script>
+</body>
+</html>
